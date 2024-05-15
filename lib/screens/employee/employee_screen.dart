@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/helpers/alert.dart';
-import 'package:projectsw2_movil/models/almacen.dart';
-import 'package:projectsw2_movil/screens/warehouse/create_warehouse.dart';
-import 'package:projectsw2_movil/services/services.dart';
+import 'package:projectsw2_movil/models/empleado.dart';
+import 'package:projectsw2_movil/screens/employee/create_employee_screen.dart';
+import 'package:projectsw2_movil/services/employee_service.dart';
 import 'package:projectsw2_movil/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
-class WarehouseScreen extends StatefulWidget {
-  const WarehouseScreen({Key? key}) : super(key: key);
+class EmployeeScreen extends StatefulWidget {
+  const EmployeeScreen({Key? key}) : super(key: key);
 
   @override
-  State<WarehouseScreen> createState() => _WarehouseScreenState();
+  State<EmployeeScreen> createState() => _EmployeeScreenState();
 }
 
-class _WarehouseScreenState extends State<WarehouseScreen> {
+class _EmployeeScreenState extends State<EmployeeScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<WarehouseService>(context, listen: false).fetchWarehouses();
+    Provider.of<EmployeeService>(context, listen: false).fetchEmployees();
   }
 
   @override
@@ -34,24 +34,27 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const CreateWarehouseScreen()),
+                MaterialPageRoute(
+                    builder: (context) => const CreateEmployeeScreen()),
               );
             },
           ),
         ],
-        title: const Text('Almacenes'),
+        centerTitle: true,
+        title: const Text('Empleados'),
       ),
       body: Center(
-        child: Consumer<WarehouseService>(builder: (context, warehouseProvider, child) {
-          if (warehouseProvider.almacenes!.isEmpty) {
+        child: Consumer<EmployeeService>(
+            builder: (context, employeeProvider, child) {
+          if (employeeProvider.empleados!.isEmpty) {
             return const CircularProgressIndicator();
           }
           return SizedBox(
             height: MediaQuery.of(context).size.height * .9,
             child: ListView.builder(
-              itemCount: warehouseProvider.almacenes!.length,
+              itemCount:employeeProvider.empleados!.length,
               itemBuilder: (ctx, index) {
-                Almacen almacen = warehouseProvider.almacenes![index];
+                Empleado empleado = employeeProvider.empleados![index];
                 return Stack(
                   children: <Widget>[
                     Container(
@@ -61,7 +64,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                               end: Alignment.bottomLeft,
                               colors: [
                             Colors.white,
-                            const Color.fromARGB(255, 0, 0, 0).withOpacity(0.3)
+                            const Color.fromARGB(255, 0, 0, 0).withOpacity(0.5)
                           ])),
                       width: MediaQuery.of(context).size.width,
                       child: Card(
@@ -77,7 +80,8 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                                 decoration: BoxDecoration(
                                   boxShadow: [
                                     BoxShadow(
-                                      color: const Color.fromARGB(255, 133, 119, 119)
+                                      color: const Color.fromARGB(
+                                              255, 133, 119, 119)
                                           .withOpacity(0.3),
                                       spreadRadius: 1.2,
                                       blurRadius: 7,
@@ -85,9 +89,15 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                                   ],
                                 ),
                                 child: const Icon(
-                                  Icons.warehouse,
+                                  Icons.person_3_rounded,
                                   color: Color.fromARGB(255, 0, 73, 175),
                                 ),
+                                // child: Image.network(
+                                //   empleado.profilePhotoUrl,
+                                //   width: 50,
+                                //   height: 50,
+                                //   fit: BoxFit.cover,
+                                // ),
                               ),
                             ),
                             Column(
@@ -100,9 +110,9 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                                   width:
                                       MediaQuery.of(context).size.width * 0.42,
                                   child: Text(
-                                    almacen.name,
+                                    empleado.name,
                                     style: const TextStyle(
-                                      fontSize: 16,
+                                      fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -111,9 +121,11 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                                   width:
                                       MediaQuery.of(context).size.width * 0.42,
                                   child: Text(
-                                    "Dirección: ${almacen.direccion}",
+                                    "Email: ${empleado.email}",
                                     style: const TextStyle(
                                       color: Colors.grey,
+                                      fontSize: 15.0,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
@@ -121,19 +133,11 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                                   width:
                                       MediaQuery.of(context).size.width * 0.42,
                                   child: Text(
-                                    "Teléfono: ${almacen.telefono}",
+                                    "Teléfono: ${empleado.celular}",
                                     style: const TextStyle(
                                       color: Colors.grey,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.42,
-                                  child: Text(
-                                    "País: ${almacen.pais}",
-                                    style: const TextStyle(
-                                      color: Colors.grey,
+                                      fontSize: 15.0,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
@@ -146,32 +150,39 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 10, right: 5),
+                                  padding:
+                                      const EdgeInsets.only(left: 10, right: 5),
                                   child: Row(
                                     children: <Widget>[
                                       ElevatedButton.icon(
                                           onPressed: () {
-                                            showAlertDialog(context, "Almacen", almacen.id);
+                                            showAlertDialog(
+                                                context, "Empleado", empleado.id);
                                           },
                                           label: const Text('Eliminar'),
                                           icon: const Icon(Icons.delete),
                                           style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.red[700])),
+                                              backgroundColor:
+                                                  Colors.red[700])),
                                     ],
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 10, right: 5),
+                                  padding:
+                                      const EdgeInsets.only(left: 10, right: 5),
                                   child: Row(
                                     children: <Widget>[
                                       ElevatedButton.icon(
                                           onPressed: () {
-                                            showAlertDialog(context, "Almacen", almacen.id);
+                                            showAlertDialog(
+                                                context, "Empleado", empleado.id);
                                           },
                                           label: const Text('Editar'),
                                           icon: const Icon(Icons.edit),
                                           style: ElevatedButton.styleFrom(
-                                              backgroundColor: const Color.fromARGB(255, 0, 76, 255))),
+                                              backgroundColor:
+                                                  const Color.fromARGB(
+                                                      255, 0, 76, 255))),
                                     ],
                                   ),
                                 ),
@@ -191,4 +202,3 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
     );
   }
 }
-

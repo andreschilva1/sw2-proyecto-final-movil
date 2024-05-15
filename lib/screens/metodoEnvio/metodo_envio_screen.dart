@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:projectsw2_movil/helpers/alert.dart';
-import 'package:projectsw2_movil/models/almacen.dart';
-import 'package:projectsw2_movil/screens/warehouse/create_warehouse.dart';
-import 'package:projectsw2_movil/services/services.dart';
+import 'package:projectsw2_movil/models/metodo_envio.dart';
+import 'package:projectsw2_movil/screens/metodoEnvio/create_metodo_envio.dart';
+import 'package:projectsw2_movil/services/metodo_envio_service.dart';
 import 'package:projectsw2_movil/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
-class WarehouseScreen extends StatefulWidget {
-  const WarehouseScreen({Key? key}) : super(key: key);
+class MetodoEnvioScreen extends StatefulWidget {
+  const MetodoEnvioScreen({Key? key}) : super(key: key);
 
   @override
-  State<WarehouseScreen> createState() => _WarehouseScreenState();
+  State<MetodoEnvioScreen> createState() => _MetodoEnvioScreenState();
 }
 
-class _WarehouseScreenState extends State<WarehouseScreen> {
+class _MetodoEnvioScreenState extends State<MetodoEnvioScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<WarehouseService>(context, listen: false).fetchWarehouses();
+    Provider.of<MetodoEnvioService>(context, listen: false).fetchMetodoEnvios();
   }
 
   @override
@@ -34,24 +34,24 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const CreateWarehouseScreen()),
+                MaterialPageRoute(builder: (context) => const CreateMetodoEnvioScreen()),
               );
             },
           ),
         ],
-        title: const Text('Almacenes'),
+        title: const Text('Métodos de Envio'),
       ),
       body: Center(
-        child: Consumer<WarehouseService>(builder: (context, warehouseProvider, child) {
-          if (warehouseProvider.almacenes!.isEmpty) {
+        child: Consumer<MetodoEnvioService>(builder: (context, metodoEnvioProvider, child) {
+          if (metodoEnvioProvider.metodoEnvios!.isEmpty) {
             return const CircularProgressIndicator();
           }
           return SizedBox(
             height: MediaQuery.of(context).size.height * .9,
             child: ListView.builder(
-              itemCount: warehouseProvider.almacenes!.length,
+              itemCount: metodoEnvioProvider.metodoEnvios!.length,
               itemBuilder: (ctx, index) {
-                Almacen almacen = warehouseProvider.almacenes![index];
+                MetodoEnvio metodoEnvio = metodoEnvioProvider.metodoEnvios![index];
                 return Stack(
                   children: <Widget>[
                     Container(
@@ -85,7 +85,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                                   ],
                                 ),
                                 child: const Icon(
-                                  Icons.warehouse,
+                                  Icons.local_shipping_outlined,
                                   color: Color.fromARGB(255, 0, 73, 175),
                                 ),
                               ),
@@ -100,7 +100,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                                   width:
                                       MediaQuery.of(context).size.width * 0.42,
                                   child: Text(
-                                    almacen.name,
+                                    "Transportista: ${metodoEnvio.transportista}",
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
@@ -111,7 +111,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                                   width:
                                       MediaQuery.of(context).size.width * 0.42,
                                   child: Text(
-                                    "Dirección: ${almacen.direccion}",
+                                    "Método: ${metodoEnvio.metodo}",
                                     style: const TextStyle(
                                       color: Colors.grey,
                                     ),
@@ -121,17 +121,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                                   width:
                                       MediaQuery.of(context).size.width * 0.42,
                                   child: Text(
-                                    "Teléfono: ${almacen.telefono}",
-                                    style: const TextStyle(
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.42,
-                                  child: Text(
-                                    "País: ${almacen.pais}",
+                                    "Costo por Kg: ${metodoEnvio.costoKg} bs",
                                     style: const TextStyle(
                                       color: Colors.grey,
                                     ),
@@ -151,7 +141,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                                     children: <Widget>[
                                       ElevatedButton.icon(
                                           onPressed: () {
-                                            showAlertDialog(context, "Almacen", almacen.id);
+                                            showAlertDialog(context, "Método de Envío", metodoEnvio.id);
                                           },
                                           label: const Text('Eliminar'),
                                           icon: const Icon(Icons.delete),
@@ -166,7 +156,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                                     children: <Widget>[
                                       ElevatedButton.icon(
                                           onPressed: () {
-                                            showAlertDialog(context, "Almacen", almacen.id);
+                                            showAlertDialog(context, "Método de Envío", metodoEnvio.id);
                                           },
                                           label: const Text('Editar'),
                                           icon: const Icon(Icons.edit),

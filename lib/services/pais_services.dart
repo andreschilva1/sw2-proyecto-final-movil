@@ -1,37 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:projectsw2_movil/models/estado_envio.dart';
 import 'dart:convert';
-
+import 'package:projectsw2_movil/models/pais.dart';
 import 'package:projectsw2_movil/services/api_service.dart';
 
+class PaisService extends ChangeNotifier {
+  List<Pais>? _paises = [];
 
-class EstadoEnvioService extends ChangeNotifier {
-  List<EstadoEnvio>? _estadoEnvio = [];
-
-  List<EstadoEnvio>? get estadoEnvio => _estadoEnvio;
+  List<Pais>? get paises => _paises;
 
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
-  Future<void> fetchEstadoEnvios() async {
-    _estadoEnvio = await getEstadoEnvio();
+  Future<void> fetchPaises() async {
+    _paises = await getPaises();
     notifyListeners();
   }
 
-  Future<List<EstadoEnvio>> getEstadoEnvio() async {
+  Future<List<Pais>> getPaises() async {
     final urlPrincipal = ApiService.baseUrl;
     final token = await _storage.read(key: 'token');
-    final url = Uri.parse('$urlPrincipal/api/getEstadoEnvio');
+    final url = Uri.parse('$urlPrincipal/api/getPaises');
     final response = await http.get(url, headers: {
       'Authorization': 'Bearer $token',
     });
 
     if (200 == response.statusCode) {
       final respuesta = jsonDecode(response.body);
-      final List<EstadoEnvio> estadoEnvios =
-          estadoEnvioFromJson(jsonEncode(respuesta['data']));
-      return estadoEnvios;
+      final List<Pais> paises = paisesFromJson(jsonEncode(respuesta['data']));
+      return paises;
     } else {
       return List.empty();
     }

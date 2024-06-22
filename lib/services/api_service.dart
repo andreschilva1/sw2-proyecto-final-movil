@@ -3,7 +3,9 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ApiService {
-  static const String _baseUrl = 'http://192.168.0.9:8000';
+  static const String _baseUrl = 'http://107.23.222.198:80';
+  //static const String _baseUrl = 'http://192.168.0.115:8000';
+  //static const String _baseUrl = 'http://192.168.0.9:8000';
 
 
   static String get baseUrl {

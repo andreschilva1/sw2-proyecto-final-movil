@@ -59,7 +59,7 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-  void register(
+  register(
       String name, String email, String password, String celular) async {
     String url = '$_baseUrl/api/createClient';
 
@@ -72,8 +72,10 @@ class AuthService extends ChangeNotifier {
 
     if (200 == response.statusCode) {
       debugPrint('success register');
+      return response;
     } else {
       debugPrint('Failed to register');
+      null;
     }
   }
 

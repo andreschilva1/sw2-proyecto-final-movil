@@ -1,5 +1,5 @@
 class ServerService{
-  final String _url = 'http://107.23.222.198:80';
+  final String _url = 'http://35.171.50.131:80';
   
   String get url {
     return _url;
